@@ -1,0 +1,9 @@
+﻿.container 
+{
+	display:flex;
+	justify-content: space-between;
+}
+.poster_container
+{
+	margin:5%;
+}
