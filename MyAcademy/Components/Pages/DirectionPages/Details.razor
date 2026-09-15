@@ -36,7 +36,7 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        direction = await context.Direction.FirstOrDefaultAsync(m => m.Id == Id);
+        direction = await context.Directions.FirstOrDefaultAsync(m => m.Id == Id);
 
         if (direction is null)
         {
