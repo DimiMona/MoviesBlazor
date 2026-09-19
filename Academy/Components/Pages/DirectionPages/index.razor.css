@@ -1,5 +1,13 @@
-﻿.input
+﻿
+::deep .direction-id
 {
-	display: flex;
-	justify-content: space-between;
+	width: 10%;
+}
+::deep .direction-name
+{
+	width: 70%;
+}
+::deep .table
+{
+	height:25%;
 }

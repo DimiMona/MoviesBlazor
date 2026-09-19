@@ -11,7 +11,7 @@
 
 <h1>Index</h1>
 
-<div class="input">
+<div class="controls">
     <p>
         <a href="directions/create" class="btn btn-primary">Добавить</a>
     </p>
@@ -32,17 +32,19 @@
     </div>
 </div>
 
-<QuickGrid Class="table" Items="context.Directions" Pagination="@pagination">
-    <PropertyColumn Property="direction => direction.direction_id" />
-    <PropertyColumn Property="direction => direction.direction_name" />
+<div>
+    <QuickGrid Class="table" Items="context.Directions" Pagination="@pagination">
+        <PropertyColumn Property="direction => direction.direction_id" Class="direction-id" />
+        <PropertyColumn Property="direction => direction.direction_name" Class="direction-name" />
 
-    <TemplateColumn Context="direction">
-        <a href="@($"directions/edit?direction_id={direction.direction_id}")">Edit</a> |
-        <a href="@($"directions/details?direction_id={direction.direction_id}")">Details</a> |
-        <a href="@($"directions/delete?direction_id={direction.direction_id}")">Delete</a>
-    </TemplateColumn>
-    <Paginator State="pagination" />
-</QuickGrid>
+        <TemplateColumn Context="direction">
+            <a href="@($"directions/edit?direction_id={direction.direction_id}")">Edit</a> |
+            <a href="@($"directions/details?direction_id={direction.direction_id}")">Details</a> |
+            <a href="@($"directions/delete?direction_id={direction.direction_id}")">Delete</a>
+        </TemplateColumn>
+        <Paginator State="pagination" />
+    </QuickGrid>
+</div>
 
 @code {
     private AcademyContext context = default!;
