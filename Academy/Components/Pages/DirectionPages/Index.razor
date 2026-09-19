@@ -1,4 +1,5 @@
 ﻿@page "/directions"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using Academy.Models
@@ -10,11 +11,28 @@
 
 <h1>Index</h1>
 
-<p>
-    <a href="directions/create">Create New</a>
-</p>
+<div class="input">
+    <p>
+        <a href="directions/create" class="btn btn-primary">Добавить</a>
+    </p>
 
-<QuickGrid Class="table" Items="context.Directions">
+    <form action="/directions">
+        <input type="search" name="titleFilter" />
+        <input type="submit" value="Найти" />
+    </form>
+
+    <div>
+        <label for="items-per-page">"Элементов на странице:"</label>
+        <select @bind="pagination.ItemsPerPage" id="items-per-page">
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="8">8</option>
+            <option value="10">10</option>
+        </select>
+    </div>
+</div>
+
+<QuickGrid Class="table" Items="context.Directions" Pagination="@pagination">
     <PropertyColumn Property="direction => direction.direction_id" />
     <PropertyColumn Property="direction => direction.direction_name" />
 
@@ -23,10 +41,14 @@
         <a href="@($"directions/details?direction_id={direction.direction_id}")">Details</a> |
         <a href="@($"directions/delete?direction_id={direction.direction_id}")">Delete</a>
     </TemplateColumn>
+    <Paginator State="pagination" />
 </QuickGrid>
 
 @code {
     private AcademyContext context = default!;
+    [SupplyParameterFromQuery]
+    string? TitleFilter { get; set; }
+    PaginationState pagination = new PaginationState { ItemsPerPage = 3 };
 
     protected override void OnInitialized()
     {
@@ -34,4 +56,6 @@
     }
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
+    IQueryable<Direction> FilteredMovies
+    => context.Directions.Where(m => m.direction_name.Contains(TitleFilter ?? string.Empty));
 }
