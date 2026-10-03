@@ -13,7 +13,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-	.AddInteractiveServerComponents();
+	.AddInteractiveServerComponents()
+	.AddCircuitOptions(options => { options.DetailedErrors = true; });
 
 var app = builder.Build();
 

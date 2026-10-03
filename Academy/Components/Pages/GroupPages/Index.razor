@@ -19,7 +19,7 @@
 
     <form action="/groups">
         <input type="search" name="titleFilter" />
-        <input type="submit" value="Найти" />
+        <input type="submit" value="Найти Группу" />
     </form>
 
     <div>
@@ -33,7 +33,7 @@
     </div>
 </div>
 
-<QuickGrid Class="table" Items="context.Groups.Include(g => g.Direction)" Pagination="@pagination">
+<QuickGrid Class="table" Items="FilteredGroups" Pagination="@pagination">
     <PropertyColumn Property="group => group.group_name" Title="Название группы" />
     <PropertyColumn Property="group => group.Direction.direction_name" />
     <PropertyColumn Property="group => group.start_date" />
@@ -52,12 +52,29 @@
     string? TitleFilter { get; set; }
     PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
 
+    IQueryable<Group> FilteredGroups
+    {
+        get
+        {
+            var query = context.Groups.Include(g => g.Direction);
+
+            if (string.IsNullOrWhiteSpace(TitleFilter))
+                return query;
+
+            var f = TitleFilter.Trim();
+            return query.Where(g =>
+                g.group_name.Contains(f) ||
+                g.Direction.direction_name.Contains(f)
+            // добавьте сюда другие поля
+            );
+        }
+    }
+
     protected override void OnInitialized()
     {
         context = DbFactory.CreateDbContext();
     }
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
-    IQueryable<Group> FilteredMovies
-    => context.Groups.Where(m => m.group_name.Contains(TitleFilter ?? string.Empty));
+    
 }
