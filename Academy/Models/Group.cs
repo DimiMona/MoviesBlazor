@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Academy.Models
@@ -13,13 +14,14 @@ namespace Academy.Models
 
 		[Required]
 		[Column(TypeName = "TINYINT")]
-		[ForeignKey(nameof(direction))]
+		[ForeignKey(nameof(Direction))]
+		[DisplayName("Направлени обучения")]
 		public int direction { get; set; }
 
 		public DateOnly? start_date { get; set; }
 		public TimeOnly? start_time { get; set; }
-		[Column(TypeName ="TINYINT")]
-		public int? learning_days { get; set; }
+		[Column(TypeName = "TINYINT")]
+		public int? learning_days { get; set; } = 0;
 
 		//Navigation properties:
 

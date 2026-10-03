@@ -7,9 +7,9 @@
 @implements IAsyncDisposable
 @inject IDbContextFactory<Academy.Data.AcademyContext> DbFactory
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Direction</PageTitle>
 
-<h1>Index</h1>
+<h1>Направления обучения</h1>
 
 <div class="controls">
     <p>
@@ -33,17 +33,17 @@
 </div>
 
 <div>
-    <QuickGrid Class="table" Items="context.Directions" Pagination="@pagination">
-        <PropertyColumn Property="direction => direction.direction_id" Class="direction-id" />
-        <PropertyColumn Property="direction => direction.direction_name" Class="direction-name" />
+    <div class="grid-container">
+        <QuickGrid Class="table" Items="context.Directions" Pagination="@pagination">
+            <PropertyColumn Property="direction => direction.direction_id" Class="direction-id" />
+            <PropertyColumn Property="direction => direction.direction_name" Class="direction-name" />
 
-        <TemplateColumn Context="direction">
-            <a href="@($"directions/edit?direction_id={direction.direction_id}")">Edit</a> |
-            <a href="@($"directions/details?direction_id={direction.direction_id}")">Details</a> |
-            <a href="@($"directions/delete?direction_id={direction.direction_id}")">Delete</a>
-        </TemplateColumn>
+            <TemplateColumn Context="direction">
+                <a href="@($"directions/details?direction_id={direction.direction_id}")">Details</a> |
+            </TemplateColumn>
+        </QuickGrid>
+    </div>
         <Paginator State="pagination" />
-    </QuickGrid>
 </div>
 
 @code {

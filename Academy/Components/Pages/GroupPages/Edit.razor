@@ -1,4 +1,5 @@
 ﻿@page "/groups/edit"
+
 @using Microsoft.EntityFrameworkCore
 @using Academy.Models
 @inject IDbContextFactory<Academy.Data.AcademyContext> DbFactory
@@ -31,7 +32,17 @@ else
                 <div class="mb-3">
                 <span class="text-danger">*</span>
                     <label for="direction" class="form-label">direction:</label>
-                    <InputNumber id="direction" @bind-Value="Group.direction" class="form-control" aria-required="true"/>
+                    @* <InputNumber id="direction" @bind-Value="Group.direction" class="form-control" aria-required="true"/> *@
+                    <InputSelect @bind-Value="Group.direction" class="form-control">
+                        
+                        @using(Academy.Data.AcademyContext context = DbFactory.CreateDbContext())
+                        {
+                            @foreach(Direction direction in context.Directions)
+                            {
+                                <option value="@direction.direction_id">@direction.direction_name</option>
+                            }
+                        }
+                    </InputSelect>
                     <ValidationMessage For="() => Group.direction" class="text-danger" />
                 </div>
                 <div class="mb-3">
@@ -41,7 +52,7 @@ else
                 </div>
                 <div class="mb-3">
                     <label for="start_time" class="form-label">start_time:</label>
-                    <InputDate id="start_time" @bind-Value="Group.start_time" class="form-control" />
+                    <input type="time" id="start_time" @bind="Group.start_time" class="form-control" />
                     <ValidationMessage For="() => Group.start_time" class="text-danger" />
                 </div>
                 <div class="mb-3">
@@ -69,7 +80,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        Group ??= await context.Group.FirstOrDefaultAsync(m => m.group_id == group_id);
+        Group ??= await context.Groups.FirstOrDefaultAsync(m => m.group_id == group_id);
 
         if (Group is null)
         {
@@ -100,12 +111,12 @@ else
             }
         }
 
-        NavigationManager.NavigateTo("/groups");
+        NavigationManager.NavigateTo($"/groups/detalis?group_id={group_id}");
     }
 
     private bool GroupExists(int group_id)
     {
         using var context = DbFactory.CreateDbContext();
-        return context.Group.Any(e => e.group_id == group_id);
+        return context.Groups.Any(e => e.group_id == group_id);
     }
 }

@@ -1,9 +1,9 @@
-﻿::deep .direction-id
+﻿::deep .group_name
 {
 	width: 10%;
 }
 
-::deep .direction-name
+::deep .direction_name
 {
 	width: 70%;
 }
