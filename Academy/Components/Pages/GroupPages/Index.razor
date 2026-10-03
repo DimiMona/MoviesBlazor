@@ -1,4 +1,5 @@
 ﻿@page "/groups"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using Academy.Models
@@ -6,19 +7,35 @@
 @implements IAsyncDisposable
 @inject IDbContextFactory<Academy.Data.AcademyContext> DbFactory
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Groups</PageTitle>
+
+    <h1>Группы</h1>
 
 <div class="controls">
-    <h1>Группы</h1>
 
     <p>
         <a href="groups/create" class="btn btn-primary">Добавить</a>
     </p>
+
+    <form action="/groups">
+        <input type="search" name="titleFilter" />
+        <input type="submit" value="Найти" />
+    </form>
+
+    <div>
+        <label for="items-per-page">"Элементов на странице:"</label>
+        <select @bind="pagination.ItemsPerPage" id="items-per-page">
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="8">8</option>
+            <option value="10">10</option>
+        </select>
+    </div>
 </div>
 
-<QuickGrid Class="table" Items="context.Groups">
+<QuickGrid Class="table" Items="context.Groups.Include(g => g.Direction)" Pagination="@pagination">
     <PropertyColumn Property="group => group.group_name" Title="Название группы" />
-    <PropertyColumn Property="group => group.direction" />
+    <PropertyColumn Property="group => group.Direction.direction_name" />
     <PropertyColumn Property="group => group.start_date" />
     <PropertyColumn Property="group => group.start_time" />
     <PropertyColumn Property="group => new Week((int)(group.learning_days ?? 0))" />
@@ -28,9 +45,12 @@
         <a href="@($"groups/details?group_id={group.group_id}")">Details</a>
     </TemplateColumn>
 </QuickGrid>
-
+<Paginator State="pagination"/>
 @code {
     private AcademyContext context = default!;
+    [SupplyParameterFromQuery]
+    string? TitleFilter { get; set; }
+    PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
 
     protected override void OnInitialized()
     {
@@ -38,4 +58,6 @@
     }
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
+    IQueryable<Group> FilteredMovies
+    => context.Groups.Where(m => m.group_name.Contains(TitleFilter ?? string.Empty));
 }
