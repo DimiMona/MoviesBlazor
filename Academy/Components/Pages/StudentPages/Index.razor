@@ -9,16 +9,29 @@
 
 <PageTitle>Студенты</PageTitle>
 
-<div class="controls">
 	<h1>Студенты</h1>
 
+<div class="controls">
 	<p>
 		<a href="students/create" class="btn btn-primary">Добавить</a>
 	</p>
+	<form action="/students">
+		<input type="search" name="Filter" />
+		<input type="submit" value="Найти Группу" />
+	</form>
+	<div>
+		<label for="items-per-page">"Элементов на странице:"</label>
+		<select @bind="pagination.ItemsPerPage" id="items-per-page">
+			<option value="3">3</option>
+			<option value="5">5</option>
+			<option value="8">8</option>
+			<option value="10">10</option>
+		</select>
+	</div>
 </div>
 
 @* <QuickGrid Class="table" Items="context.Students.Include(s => s.Group).ThenInclude(g => g.Direction)"> *@
-<QuickGrid Class="table" Items="FilteredStudents">
+<QuickGrid Class="table" Items="FilteredStudents" Pagination="@pagination">
 	@* <PropertyColumn Property="student => student.last_name" />
 	<PropertyColumn Property="student => student.first_name" />
 	<PropertyColumn Property="student => student.middle_name" /> *@
@@ -50,7 +63,7 @@
 		<a href="@($"students/delete?stud_id={student.stud_id}")">Delete</a>
 	</TemplateColumn> *@
 </QuickGrid>
-
+<Paginator State="pagination" />
 @code
 {
 	private AcademyContext context = default!;
@@ -63,7 +76,7 @@
 
 	[SupplyParameterFromQuery]
 	string? Filter { get;set;}
-
+	PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
 	protected override void OnInitialized()
 	{
 		context = DbFactory.CreateDbContext();
@@ -77,6 +90,13 @@
 			.Include(s => s.Group)
 			.ThenInclude(g => g.Direction)
 			.AsEnumerable()
-			.Where(s => s.FullName.Contains(Filter ?? string.Empty))
+			.Where(s =>
+			string.IsNullOrWhiteSpace(Filter) ||
+			s.FullName.Contains(Filter) ||
+			(s.Group != null && s.Group.group_name.Contains(Filter)) ||
+			(s.Group != null && s.Group.Direction != null && s.Group.Direction.direction_name.Contains(Filter)))
 			.AsQueryable();
+
+
+	
 }
