@@ -72,7 +72,10 @@ else
 							<ValidationMessage For="() => Teacher.rate" class="text-danger" />
 						</div>
 					</div>
-					<Photo Human="Teacher" AllowChange=true />
+					<div>
+						<Photo Human="Teacher" AllowChange=true />
+						<AddDisciplines Teacher="Teacher"></AddDisciplines>
+					</div>
 				</div>
 				@* <div class="mb-3">
 					<label for="photo" class="form-label">photo:</label>
