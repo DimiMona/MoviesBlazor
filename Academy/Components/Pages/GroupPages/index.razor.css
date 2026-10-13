@@ -1,0 +1,15 @@
+﻿::deep .group_name
+{
+	width: 10%;
+}
+
+::deep .direction_name
+{
+	width: 70%;
+}
+
+::deep .grid-container
+{
+	height: 58vh;
+	/*vh -Viewport Heihht (Высота видимой части страницы)*/
+}
