@@ -1,4 +1,13 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using ContosoUniversity.Data;
+//using ContosoUniversity.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<ContosoUniversityContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ContosoUniversityContext") ?? throw new InvalidOperationException("Connection string 'ContosoUniversityContext' not found.")));
+//builder.Services.AddDbContext<ContosoUniversityContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("ContosoUniversityContext") ?? throw new InvalidOperationException("Connection string 'ContosoUniversityContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -25,5 +34,25 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+CreateDbIfNotExists(app);
 
 app.Run();
+
+
+static void  CreateDbIfNotExists(IHost host)
+{
+    using (IServiceScope scope=host.Services.CreateScope())
+    {
+        IServiceProvider provider = scope.ServiceProvider;
+        try
+        {
+            ContosoUniversityContext context = provider.GetRequiredService<ContosoUniversityContext>();
+            DbInitializer.Initialize(context);
+        }
+        catch (Exception ex)
+        {
+            ILogger<Program> logger = provider.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "Ошибка инициализации Базы данных");
+        }
+    }
+}
