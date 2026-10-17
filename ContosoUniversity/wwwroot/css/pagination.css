@@ -2,3 +2,27 @@
 {
 	height:48ch;
 }
+.pagination-controls, .pagination-items, .pagination-items > div
+{
+	display:flex;
+	justify-content:space-between;
+	align-items: center;
+}
+	.pagination-items, .pagination-items > div
+	{
+		justify-content: center;
+	}	
+		.pagination-items > div
+		{
+			width:32px;
+			height:32px;
+			border:solid 1px;
+			margin: 8px;
+		}
+.selected-page
+{
+	font-weight:800;
+	color:white;
+	background-color:black;
+	box-shadow: 0px 0px 16px 0px gray;
+}

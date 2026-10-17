@@ -46,44 +46,56 @@
 				</th>
 				<th></th>
 			</tr>
-	</thead>
-	<tbody>
-		@foreach (var item in Model)
-		{
-			<tr>
-				<td>
-					@Html.DisplayFor(modelItem => item.LastName)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.FirstName)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.EnrollmentDate)
-				</td>
-				<td>
-					<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-					<a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-					<a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-				</td>
-			</tr>
-		}
-	</tbody>
-</table>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(modelItem => item.LastName)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.FirstName)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.EnrollmentDate)
+					</td>
+					<td>
+						<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+						<a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+						<a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
 </div>
 @{
 	string prevDisabled = Model.HasPreviousPage ? "" : "disabled";
 	string nextDisabled = Model.HasNextPage ? "" : "disabled";
 }
 
-<a asp-action="Index"
-   asp-route-pageIndex="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @prevDisabled">
-	Prev
-</a>
-<a asp-action="Index"
-   asp-route-pageIndex="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @nextDisabled">
-	Next
-</a>
+<div class="pagination-controls">
+	<a asp-action="Index"
+	   asp-route-pageIndex="@(Model.PageIndex - 1)"
+	   asp-route-searchString="@ViewData["CurrentFilter"]"
+	   class="btn btn-default @prevDisabled">
+		Prev
+	</a>
+	<div class="pagination-items">
+
+	@for (int i = 1; i <= Model.TotalPages; i++)
+	{
+			<div class=@(i == Model.PageIndex ? "selected-page" : "pagination-item") > 
+				@i
+			</div>
+		}
+	</div>
+
+	<a asp-action="Index"
+	   asp-route-pageIndex="@(Model.PageIndex + 1)"
+	   asp-route-searchString="@ViewData["CurrentFilter"]"
+	   class="btn btn-default @nextDisabled">
+		Next
+	</a>
+</div>
