@@ -18,33 +18,34 @@
 <p>
 	<a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-	<thead>
-		<tr>
-			<th>
-				<a asp-action="Index"
-				   asp-route-sortOrder="@ViewData["NameSortParam"]"
-				   asp-route-searchString="@ViewData["CurrentFilter"]">
-					Last name
-					@* @Html.DisplayNameFor(model => model.LastName) *@
-				</a>
-				@* @Html.DisplayNameFor(model => model.Title) *@
-			</th>
-			<th>
-				First name
-				@* @Html.DisplayNameFor(model => model.FirstName) *@
-			</th>
-			<th>
-				<a asp-action="Index"
-				   asp-route-sortOrder="@ViewData["DateSortParam"]"
-				   asp-route-searchString="@ViewData["CurrentFilter"]">
-					Enrollment date
-					@* @Html.DisplayNameFor(model => model.EnrollmentDate) *@
-				</a>
-				@* @Html.DisplayNameFor(model => model.Credits) *@
-			</th>
-			<th></th>
-		</tr>
+<div class="table-container">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>
+					<a asp-action="Index"
+					   asp-route-sortOrder="@ViewData["NameSortParam"]"
+					   asp-route-searchString="@ViewData["CurrentFilter"]">
+						Last name
+						@* @Html.DisplayNameFor(model => model.LastName) *@
+					</a>
+					@* @Html.DisplayNameFor(model => model.Title) *@
+				</th>
+				<th>
+					First name
+					@* @Html.DisplayNameFor(model => model.FirstName) *@
+				</th>
+				<th>
+					<a asp-action="Index"
+					   asp-route-sortOrder="@ViewData["DateSortParam"]"
+					   asp-route-searchString="@ViewData["CurrentFilter"]">
+						Enrollment date
+						@* @Html.DisplayNameFor(model => model.EnrollmentDate) *@
+					</a>
+					@* @Html.DisplayNameFor(model => model.Credits) *@
+				</th>
+				<th></th>
+			</tr>
 	</thead>
 	<tbody>
 		@foreach (var item in Model)
@@ -68,6 +69,7 @@
 		}
 	</tbody>
 </table>
+</div>
 @{
 	string prevDisabled = Model.HasPreviousPage ? "" : "disabled";
 	string nextDisabled = Model.HasNextPage ? "" : "disabled";
