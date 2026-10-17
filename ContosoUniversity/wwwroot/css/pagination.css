@@ -14,15 +14,17 @@
 	}	
 		.pagination-items > div
 		{
+			text-decoration:none;
+			color:black;
 			width:32px;
 			height:32px;
 			border:solid 1px;
 			margin: 8px;
 		}
-.selected-page
-{
-	font-weight:800;
-	color:white;
-	background-color:black;
-	box-shadow: 0px 0px 16px 0px gray;
-}
+		.selected-page > .selected-page
+		{
+			font-weight: 800;
+			color: white;
+			background-color: black;
+			box-shadow: 0px 0px 16px 0px gray;
+		}

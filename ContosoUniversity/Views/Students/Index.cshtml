@@ -84,10 +84,15 @@
 	</a>
 	<div class="pagination-items">
 
-	@for (int i = 1; i <= Model.TotalPages; i++)
-	{
-			<div class=@(i == Model.PageIndex ? "selected-page" : "pagination-item") > 
-				@i
+		@for (int i = 1; i <= Model.TotalPages; i++)
+		{
+			<div class="pagination-controls">
+				<a asp-action="Index"
+				   asp-route-pageIndex="@i"
+				   asp-route-searchString="@ViewData["CurrentFilter"]"
+				   class=@(i == Model.PageIndex ? "selected-page" : "pagination-item")>
+					@i
+				</a>
 			</div>
 		}
 	</div>
