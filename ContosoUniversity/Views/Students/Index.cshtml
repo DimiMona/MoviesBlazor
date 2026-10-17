@@ -14,9 +14,19 @@
 			<a asp-action="Index" class="btn btn-dark">Сброс</a>
 		</label>
 	</form>
-	<p>
+
+	<div>
+		<label for="items-per-page">Items per page:</label>
+		<select id="items-per-page" asp-action="Index" asp-route-itemsPerPage="">
+			<option value="3">3</option>
+			<option value="5">5</option>
+			<option value="8">8</option>
+		</select>
+	</div>
+
+<div>
 		<a asp-action="Create" class="btn btn-primary">Create New</a>
-	</p>
+	</div>
 </div>
 <div class="table-container">
 	<table class="table">
