@@ -37,7 +37,7 @@ namespace ContosoUniversity.Controllers
 
             IQueryable<Student> students = from student in _context.Students select student;
 
-            if(!(String.IsNullOrEmpty(searchString) && !String.IsNullOrEmpty(searchString)))
+            if(!String.IsNullOrEmpty(searchString) && !String.IsNullOrWhiteSpace(searchString))
             {
                 pageIndex = 1;
                 students = students.Where

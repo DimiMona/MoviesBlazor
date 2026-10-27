@@ -37,7 +37,7 @@ namespace ContosoUniversity.Controllers
 
 			IQueryable<Course> courses = from course in _context.Courses select course;
 
-			if (!(String.IsNullOrEmpty(searchString) && !String.IsNullOrEmpty(searchString)))
+			if (!String.IsNullOrEmpty(searchString) && !String.IsNullOrWhiteSpace(searchString))
 			{
 				pageIndex = 1;
 				 courses = courses.Where
@@ -52,8 +52,8 @@ namespace ContosoUniversity.Controllers
 			{
 				case "name_desc": courses = courses.OrderByDescending(s => s.Title); break;
 				case "date_desc": courses = courses.OrderByDescending(s => s.Credits);  break;
-				//case "date_asc": courses = courses.OrderBy(s => s.Enrollments);         break;
-				default: courses = courses.OrderBy(s => s.Title);                    break;
+                case "date_asc": courses = courses.OrderBy(s => s.Credits);     break;
+                default: courses = courses.OrderBy(s => s.Title);                    break;
 
 			}
 			ViewData["ItemsPerPage"] = itemsPerPage;
