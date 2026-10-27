@@ -20,10 +20,47 @@ namespace ContosoUniversity.Controllers
         }
 
         // GET: Courses
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index
+            (
+			 string sortOrder,
+			string searchString,
+			int? pageIndex,
+			int itemsPerPage = 3
+			)
         {
-            return View(await _context.Courses.ToListAsync());
-        }
+
+
+
+            ViewData["NameSortParam"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParam"] = sortOrder == "date_desc" ? "date_asc" : "date_desc";
+			ViewData["CurrentFilter"] = searchString;
+
+			IQueryable<Course> courses = from course in _context.Courses select course;
+
+			if (!(String.IsNullOrEmpty(searchString) && !String.IsNullOrEmpty(searchString)))
+			{
+				pageIndex = 1;
+				 courses = courses.Where
+					(
+					course =>
+					course.Title.Contains(searchString) 
+
+					);
+			}
+
+			switch (sortOrder)
+			{
+				case "name_desc": courses = courses.OrderByDescending(s => s.Title); break;
+				case "date_desc": courses = courses.OrderByDescending(s => s.Credits);  break;
+				//case "date_asc": courses = courses.OrderBy(s => s.Enrollments);         break;
+				default: courses = courses.OrderBy(s => s.Title);                    break;
+
+			}
+			ViewData["ItemsPerPage"] = itemsPerPage;
+			int pageSize = itemsPerPage;
+            return View(await PaginatedList<Course>.CreateAsync(courses.AsNoTracking(), pageIndex ?? 1, pageSize));
+			//return View(await _context.Courses.ToListAsync());
+		}
 
         // GET: Courses/Details/5
         public async Task<IActionResult> Details(int? id)
