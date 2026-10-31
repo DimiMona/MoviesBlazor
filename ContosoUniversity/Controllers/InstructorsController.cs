@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ContosoUniversity.Data;
+using ContosoUniversity.Models;
+using ContosoUniversity.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ContosoUniversity.Data;
-using ContosoUniversity.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ContosoUniversity.Controllers
 {
@@ -19,14 +20,59 @@ namespace ContosoUniversity.Controllers
             _context = context;
         }
 
-        // GET: Instructors
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Instructors.ToListAsync());
-        }
+		// GET: Instructors
+		//public async Task<IActionResult> Index()
+		//{
+		//    return View(await _context.Instructors.ToListAsync());
+		//}
 
-        // GET: Instructors/Details/5
-        public async Task<IActionResult> Details(int? id)
+		public async Task<IActionResult> Index(int? id, int? courseID)
+		{
+			InstructorIndexData viewModel = new InstructorIndexData();
+			viewModel.Instructors = await _context
+				.Instructors
+				.Include(i => i.OfficeAssignment)
+				.Include(i => i.CourseAssignments)
+					.ThenInclude(ca => ca.Course)
+						.ThenInclude(c => c.Enrollments)
+							.ThenInclude(e => e.Student)
+				.Include(i => i.CourseAssignments)
+					.ThenInclude(ca => ca.Course)
+						.ThenInclude(c => c.Department)
+				.AsNoTracking()
+				.OrderBy(i => i.LastName)
+				.ToListAsync();
+
+			if (id != null)
+			{
+				ViewData["InstructorID"] = id.Value;
+
+				/*Instructor instructor = viewModel
+					.Instructors
+					.Where(i => i.ID == id.Value).Single();
+				viewModel.Courses = instructor
+					.CourseAssignments
+					.Select(ca => ca.Course);*/
+
+				viewModel.Courses = viewModel
+					.Instructors.Where(i => i.ID == id.Value).Single()
+					.CourseAssignments.Select(ca => ca.Course);
+			}
+
+			if (courseID != null)
+			{
+				ViewData["CourseID"] = courseID.Value;
+				viewModel.Enrollments = viewModel
+					.Courses.Where(c => c.CourseID == courseID.Value)
+					.Single()
+					.Enrollments;
+			}
+
+			return View(viewModel);
+		}
+
+		// GET: Instructors/Details/5
+		public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
