@@ -2,17 +2,19 @@
 
 namespace ContosoUniversity
 {
-	public class PaginatedList<T>:List<T>
+	public class PaginatedList<T> : List<T>
 	{
 		public int PageIndex { get; set; }
 		public int TotalPages { get; set; }
 
-		public PaginatedList(List<T> items, int count, int pageIndex, int pageSize) 
+		public PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
 		{
+			//count - общее количество элементов
 			this.PageIndex = pageIndex;
-			this.TotalPages = count/pageSize;
+			this.TotalPages = (int)Math.Ceiling((double)count / pageSize);
 			this.AddRange(items);
 		}
+
 		public bool HasPreviousPage => PageIndex > 1;
 		public bool HasNextPage => PageIndex < TotalPages;
 
@@ -24,7 +26,9 @@ namespace ContosoUniversity
 		)
 		{
 			int count = await source.CountAsync();
-			List<T> items = await source.Skip((pageIndex -1)*pageSize).Take(pageSize).ToListAsync();
+			List<T> items = await source.Skip((pageIndex - 1) * pageSize)
+										.Take(pageSize)
+										.ToListAsync();
 			return new PaginatedList<T>(items, count, pageIndex, pageSize);
 		}
 	}
