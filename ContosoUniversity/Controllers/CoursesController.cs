@@ -83,7 +83,8 @@ namespace ContosoUniversity.Controllers
         // GET: Courses/Create
         public IActionResult Create()
         {
-            return View();
+			PopulateDepartmentsDropdownList();
+			return View();
         }
 
         // POST: Courses/Create
@@ -91,7 +92,7 @@ namespace ContosoUniversity.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseID,Title,Credits")] Course course)
+        public async Task<IActionResult> Create([Bind("CourseID,Title,Credits, DepartmentID")] Course course)
         {
             if (ModelState.IsValid)
             {
@@ -115,7 +116,8 @@ namespace ContosoUniversity.Controllers
             {
                 return NotFound();
             }
-            return View(course);
+			PopulateDepartmentsDropdownList(course.DepartmentID);
+			return View(course);
         }
 
         // POST: Courses/Edit/5
@@ -185,10 +187,25 @@ namespace ContosoUniversity.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+                
+		private bool CourseExists(int id)
+		{
+			return _context.Courses.Any(e => e.CourseID == id);
+		}
 
-        private bool CourseExists(int id)
-        {
-            return _context.Courses.Any(e => e.CourseID == id);
-        }
-    }
+		void PopulateDepartmentsDropdownList(object selectedDepartment = null)
+		{
+			IQueryable<Department> departments =
+				from department in _context.Departments
+				orderby department.Name
+				select department;
+			ViewBag.DepartmentID = new SelectList
+			(
+				departments.AsNoTracking(),
+				"DepartmentID",
+				"Name",
+				selectedDepartment
+			);
+		}
+	}
 }
